@@ -687,3 +687,45 @@ const calc = {
   },
 };
 ```
+
+## Using spread operator for array manipulation
+
+You have an array ["a", "b", "c", "d"]. Add one item to start and to the end. Demonstrate classical aproach and do it using spread operator.
+
+This is pretty easy. Classical aproach would make you use `push` and `unshift` methods.
+
+```js
+const arr = ['a', 'b', 'c', 'd'];
+
+arr.push('last');
+arr.unshift('first');
+
+console.log(arr);
+```
+
+or using the spread operator
+
+```js
+const arr = ['a', 'b', 'c', 'd'];
+
+const newArr = ['first', ...arr, 'last'];
+
+console.log(newArr);
+```
+
+## What is the output
+
+```js
+var num = 4;
+function outer() {
+  var num = 2;
+  function inner() {
+    num--;
+    var num = 3;
+    console.log(num);
+  }
+  inner();
+}
+
+outer(); // 3
+```
