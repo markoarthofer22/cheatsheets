@@ -565,9 +565,7 @@ setTimeout(() => {
   console.log('2');
 }, 0);
 
-new Promise((resolve, reject) => {
-  resolve(console.log('3'));
-});
+Promise.resolve(() => console.log('3')).then((res) => res());
 
 console.log('4');
 ```
@@ -583,4 +581,109 @@ Why? Because of the **Event loop**. An event loop is something that pulls variou
 
 The event loop is used to take the first event from the Event Queue and place it on the stack, which in this case is the callback function. If this function is called from here, it will call other functions within it.
 
-Also `Promise` is a Macro task, and `setTimeout` is Micro task, so `Promise` gets priority. Check here for [detailed info](https://javascript.info/event-loop)
+Also `Promise` is a Macro task (priority queue), and `setTimeout` is Micro task (task queue), so `Promise` gets priority. Check here for [detailed info](https://javascript.info/event-loop)
+
+## Memoize expensive calculations
+
+We should always strive for optimization. One of them i memoization of a process. That means that we don't want to do something that hasn't changed already, and that we just want to return old value.
+
+In React, for example, you have `useMemo()`.
+
+```js
+const clumsyFunction = (num1, num2) => {
+  for (let i = 1; i <= 10000000; i++);
+
+  return num1 * num2;
+};
+
+console.time('first call');
+console.log(clumsyFunction(3213, 2133));
+console.timeEnd('first call');
+
+console.time('second call');
+console.log(clumsyFunction(3213, 2133));
+console.timeEnd('second call');
+```
+
+This will result in expesive function to render the same result twice, which is a wast of memory and time.
+
+```js
+6853329
+first call: 19.564697265625 ms
+6853329
+second call: 12.76708984375 ms
+```
+
+How to create your own memoization.
+
+```js
+function Memoizator(fn, context) {
+  const res = {};
+
+  return function (...args) {
+    var cached = JSON.stringify(args); //var bcs we need to access it in other fun
+
+    if (!res[cached]) {
+      res[cached] = fn.call(context | this, ...args); // we bind this to the function context
+    }
+
+    return res[cached];
+  };
+}
+```
+
+Now memoize your function and check again :smile:
+
+```js
+const memoizedClumsyFunction = Memoizator(clumsyFunction);
+//...
+console.log(memoizedClumsyFunction(3213, 2133));
+```
+
+## Infinite Currying
+
+Lets say that you need to create HOF that does infinite adds. Something like this:
+
+```js
+console.log(infiniteAdd(5)(15)(3)(12)()); /// 35
+```
+
+How to do this? With Currying it is pretty simple. We add Wrapper what will handle all of this.
+
+```js
+function infiniteAdd(a) {
+  return function (b) {
+    if (b) return infiniteAdd(a + b); //only if we have provided new value return calculation
+    return a;
+  };
+}
+```
+
+## Advanced `this` usage
+
+Lets do advanced `this` thing. Say that you need to create snippet as follows:
+
+```js
+const result = calc.add(10).mult(5).sub(15).add(5);
+console.log(result.total); //40
+```
+
+So we are expecting to return an object with some props.
+
+```js
+const calc = {
+  total: 0, // we define total for "this" context - block
+  mult(a) {
+    this.total = this.total * a; // or this.total *= a
+    return this; // we need to return this as a context
+  },
+  add(a) {
+    this.total += a;
+    return this;
+  },
+  sub(a) {
+    this.total -= a;
+    return this;
+  },
+};
+```
