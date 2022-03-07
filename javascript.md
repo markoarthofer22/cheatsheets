@@ -729,3 +729,34 @@ function outer() {
 
 outer(); // 3
 ```
+
+## Return unique values from array (using Set and filter)
+
+```js
+const data = ['a', 'b', 'c', 'd', 'a', 'b'];
+
+const unique = data.filter((item, index) => data.indexOf(item) === index);
+
+//with Set
+const usingSet = new Set(data);
+
+console.log('unique: ', unique);
+console.log('usingSet: ', usingSet);
+
+//expected output ["a", "b", "c", "d"]
+```
+
+## Return only duplicated values from array
+
+```js
+const data = ['a', 'b', 'c', 'd', 'a', 'b'];
+
+const unique = data.filter(
+  (item, index) =>
+    data.lastIndexOf(item) == index && data.indexOf(item) != index
+);
+
+console.log('unique: ', unique);
+
+//expected output ["a", "b"]
+```
