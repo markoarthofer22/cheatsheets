@@ -338,7 +338,7 @@ function add(a, b) {
 const add = (a, b) => a + b;
 ```
 
-If the arrow function is implemented with “concise body” (without {}), it does not need an explicit return statement. Note the omitted { } after the => (implicite return).
+If the arrow function is implemented with “concise body” (without {}), it does not need an explicit return statement. Note the omitted { } after the => (implicit return).
 
 Now the biggest difference from classical functions is in `this`.
 
