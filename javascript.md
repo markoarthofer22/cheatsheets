@@ -153,6 +153,30 @@ console.log(b); // Error as b is not accessible outside the function
 console.log(c); // Error as c is not accessible outside the block
 ```
 
+If you define var inside of the function, it will be scoped to the context of the function.
+
+```js
+function a() {
+  var a = 10;
+  console.log(a); //10
+}
+
+console.log(a); //error: Uncaught ReferenceError: a is not defined
+```
+
+but if you define it inside of the if statment (or any block type) it will be visible.
+
+```js
+console.log('outside if: ', a); // undefined (because it is hoisted)
+
+if (true) {
+  var a = 10;
+  console.log('inside if: ', a); // 10
+}
+
+console.log('outside if: ', a); // 10
+```
+
 ## JS objects
 
 Just like arrays, objects are a way of storing data. We do so with the help of key-value pairs.
@@ -248,7 +272,7 @@ const quman_1 = {
 };
 const quman_2 = {
   name: 'Quman2',
-  displayName_1: function displayName() {
+  displayName_2: function displayName() {
     console.log(this.name);
   },
 };
@@ -315,10 +339,10 @@ let object2 = {
 
 object2.__proto__ = object;
 
-console.log(object2.city);
+console.log(object2.city); // Zagreb
 ```
 
-By doing this, `object2` gets access to the object's properties so this will work. We inherited "Zagreb" from "object" (and overwrite name in `object2`)
+By doing this, `object2` gets access to the object's properties so this will work. We inherited "Zagreb" from "object".
 
 ## Arrow functions
 
@@ -407,6 +431,15 @@ console.log(add(2)(3)); // 5
 const multiply = (m) => (n) => n * m;
 
 console.log(multiply(2)(3)); // 6
+
+//create new functions
+
+const multiplyWrapper = multiply(2);
+console.log(multiplyWrapper(10)); // 20
+
+//or with better naming
+const triple = mulitply(3);
+console.log(multiplyWrapper(10)); // 30
 ```
 
 ### Hoisting
@@ -416,14 +449,14 @@ Hoisting is JavaScript's default behavior of moving declarations to the top of t
 In JavaScript, functions are fully hoisted, `var` variables are hoisted and initialized to undefined, and `let` and `const` variables are hoisted but not initialized a value. `Var` variables are given a memory allocation and initialized a value of undefined until they are set to a value in line. So if a `var` variable is used in the code before it is initialized, then it will return undefined. However, a function can be called from anywhere in the code base because it is fully hoisted. If `let` and `const` are used before they are declared, then they will throw a reference error because they have not yet been initialized.
 
 ```js
-console.log(sing()); //undefined
+console.log(sing()); //Uncaught ReferenceError: Cannot access 'sing' before initialization
 
 console.log(sing2()); // ohhhh la la la
 
-// function expression gets hoisted as undefined
-var sing = function () {
+const sing = function () {
   console.log('uhhhh la la la');
 };
+
 // function declaration gets fully hoisted
 function sing2() {
   console.log('ohhhh la la la');
@@ -449,7 +482,7 @@ console.log(a());
 
 ## ASYNC <3
 
-Async or Asynchronous JavaScript allows the program to be executed immediately where the synchronous code will block further execution of the remaining code until it finishes the current one.
+Async or Asynchronous JavaScript allows the program to be executed immediately as opposed to synchronous code which will block further execution of the remaining code until it finishes the current one.
 
 So, JS is a single-threaded language. Things happen one at a time. Only after one thing is done can we move to the next thing.
 
